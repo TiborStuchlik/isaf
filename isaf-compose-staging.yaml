@@ -3,7 +3,7 @@ services:
   kopr_staging:
     build:
       context: ../
-      dockerfile: all/kopr.staging.Dockerfile
+      dockerfile: kopr.staging.Dockerfile
     container_name: TYB_KOPR_STAGING
     privileged: true
     #command: tail -f /dev/null
