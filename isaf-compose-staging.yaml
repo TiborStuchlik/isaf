@@ -3,7 +3,7 @@ services:
   kopr_staging:
     build:
       context: ../
-      dockerfile: ./kopr.staging.Dockerfile
+      dockerfile: /home/tibor/projects/shared/isaf/all/kopr.staging.Dockerfile
     container_name: TYB_KOPR_STAGING
     privileged: true
     #command: tail -f /dev/null
