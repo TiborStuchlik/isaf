@@ -1,0 +1,77 @@
+version: '3.9'
+
+services:
+  kopr_devel:
+    build:
+      context: ../../../kopr
+      dockerfile: /home/tibor/projects/shared/isaf/all/kopr.devel.Dockerfile
+    container_name: TYB_KOPR_DEV
+    privileged: true
+    command: tail -f /dev/null
+    #command: '/bin/bash'
+    hostname: ferman
+    #extra_hosts:
+    #  - "tix:tix_devel"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /home/tibor/projects/kopr:/project
+      - /home/tibor/projects/shared:/shared
+    ports:
+      #- "192.168.12.239:3022:22"
+      #- "192.168.12.239:3001:3000"
+      - "192.168.12.239:3002:1234"
+      - "192.168.12.239:3003:26168"
+    networks:
+      - isaf_devel
+  tix_devel:
+    build:
+      context: ../../../tix
+      dockerfile: /home/tibor/projects/shared/isaf/all/tix.devel.Dockerfile
+    container_name: TYB_TIX_DEV
+    privileged: true
+    command: tail -f /dev/null
+    #command: '/bin/bash'
+    hostname: tix
+    #extra_hosts:
+    #  - "goout.net:192.168.12.239"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /home/tibor/projects/tix:/project
+      - /home/tibor/projects/shared:/shared
+    ports:
+      - "192.168.12.239:3122:22"
+      #- "192.168.12.239:3101:3000"
+      - "192.168.12.239:3102:1234"
+      - "192.168.12.239:3103:26168"
+    networks:
+      - isaf_devel
+  web_pa_devel:
+    build:
+      context: ../../../web_pa
+      dockerfile: /home/tibor/projects/shared/isaf/all/web_pa.devel.Dockerfile
+    container_name: TYB_WEB_PA_DEV
+    privileged: true
+    command: tail -f /dev/null
+    #command: '/bin/bash'
+    hostname: web_pa
+    #extra_hosts:
+    #  - "tix:tix_devel"
+    #  - "ferman:ferman_devel"
+    volumes:
+      - /home/tibor/projects/web_pa:/project
+      - /etc/varnish:/etc/varnish
+      - /etc/httpd/conf.d:/etc/httpd/conf.d
+      - /etc/letsencrypt/live:/etc/letsencrypt/live
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /home/tibor/projects/shared:/shared
+    ports:
+      - "192.168.12.239:3222:22"
+      #- "192.168.12.239:3201:3000"
+      - "192.168.12.239:3202:1234"
+      - "192.168.12.239:3203:26168"
+    networks:
+      - isaf_devel
+
+networks:
+  isaf_devel:
+    driver: bridge

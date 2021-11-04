@@ -1,0 +1,69 @@
+version: '3.8'
+services:
+  kopr_staging:
+    build:
+      context: ../
+      dockerfile: all/kopr.staging.Dockerfile
+    container_name: TYB_KOPR_STAGING
+    privileged: true
+    #command: tail -f /dev/null
+    command: bash -c "rm -f tmp/pids/passenger.3000.pid && bundle exec passenger start -p 3000 -e production"
+    hostname: ferman
+    restart: on-failure
+    #extra_hosts:
+    #  - "tix:tix_staging"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /home/tibor/projects/shared:/shared
+    ports:
+      - "192.168.12.238:3000:3000"
+      - "192.168.12.238:3022:22"
+    networks:
+      - isaf_staging
+  tix_staging:
+    build:
+      context: ../
+      dockerfile: all/tix.staging.Dockerfile
+    container_name: TYB_TIX_STAGING
+    privileged: true
+    #command: tail -f /dev/null
+    command: bash -c "rm -f tmp/pids/production.pid && bundle exec bin/rails server -p 3000 -e production -b 0.0.0.0"
+    hostname: tix
+    restart: on-failure
+    #extra_hosts:
+    #  - "ferman:ferman_staging"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /home/tibor/projects/shared:/shared
+    ports:
+      - "192.168.12.238:3100:3000"
+      - "192.168.12.238:3122:22"
+    networks:
+      - isaf_staging
+  web_pa_staging:
+    build:
+      context: ../
+      dockerfile: all/web_pa.staging.Dockerfile
+    container_name: TYB_WEB_PA_STAGING
+    privileged: true
+    #command: tail -f /dev/null
+    command: bash -c "rm -f tmp/pids/production.pid && bundle exec bin/rails server -p 3000 -e production -b 0.0.0.0"
+    hostname: web_pa
+    restart: on-failure
+    #extra_hosts:
+    #  - "ferman:ferman_staging"
+    volumes:
+      - /home/tibor/projects/web_pa:/project
+      - /etc/varnish:/etc/varnish
+      - /etc/httpd/conf.d:/etc/httpd/conf.d
+      - /etc/letsencrypt/live:/etc/letsencrypt/live
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /home/tibor/projects/shared:/shared
+    ports:
+      - "192.168.12.238:3200:3000"
+      - "192.168.12.238:3222:22"
+    networks:
+      - isaf_staging
+networks:
+  isaf_staging:
+    driver: bridge
